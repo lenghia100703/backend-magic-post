@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-const Role = new mongoose.Schema(
+const Province = new mongoose.Schema(
     {
-        description: {
+        name: {
             type: String,
         },
         code: {
@@ -10,10 +10,10 @@ const Role = new mongoose.Schema(
             unique: true,
             required: true,
         },
-        accounts: [
+        districts: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Account',
+                ref: 'District',
             },
         ],
     },
@@ -22,4 +22,4 @@ const Role = new mongoose.Schema(
     },
 );
 
-module.exports = mongoose.model('Role', Role);
+module.exports = mongoose.model('Province', Province);

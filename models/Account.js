@@ -10,8 +10,11 @@ const Account = new mongoose.Schema(
             ref: 'Role',
             default: '6546fc4b4941402447950717',
         },
-        address: { type: String },
-        phone: { type: String },
+        address: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'District',
+        },
+        phone: { type: String, unique: true },
         refreshToken: {
             type: String,
             default: '',

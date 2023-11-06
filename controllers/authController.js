@@ -1,4 +1,5 @@
 const Account = require('../models/Account');
+const Role = require('../models/Role');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -15,6 +16,11 @@ const authController = {
             });
 
             const account = await newAccount.save();
+            await Role.findByIdAndUpdate('6546fc4b4941402447950717', {
+                $push: {
+                    accounts: account._id,
+                },
+            });
             res.status(200).json({
                 data: account,
                 message: 'sign up success',
