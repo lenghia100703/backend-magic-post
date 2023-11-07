@@ -13,6 +13,9 @@ const Package = new mongoose.Schema(
         name: {
             type: String,
         },
+        weight: {
+            type: Number,
+        },
         status: {
             type: String,
             enum: ['success', 'fail', 'shipping'],
@@ -25,6 +28,13 @@ const Package = new mongoose.Schema(
         deliveryAddress: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'District',
+        },
+        shippingFee: {
+            type: Number,
+        },
+        shippingMethod: {
+            type: String,
+            enum: ['fast', 'express'],
         },
     },
     {
