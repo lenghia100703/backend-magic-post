@@ -14,7 +14,7 @@ const Account = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'District',
         },
-        phone: { type: String, unique: true },
+        phone: { type: String, unique: true, required: true },
         refreshToken: {
             type: String,
             default: '',

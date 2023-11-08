@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 
 const authRoute = require('./routes/authRoute');
+const districtRoute = require('./routes/districtRoute');
+const provinceRoute = require('./routes/provinceRoute');
 
 dotenv.config();
 
@@ -16,6 +18,8 @@ app.use(express.json());
 
 // routers
 app.use('/auth', authRoute);
+app.use('/district', districtRoute);
+app.use('/province', provinceRoute);
 
 // connect to database
 

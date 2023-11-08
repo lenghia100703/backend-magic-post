@@ -13,6 +13,7 @@ const authController = {
                 username: req.body.username,
                 password: hashed,
                 email: req.body.email,
+                phone: req.body.phone,
             });
 
             const account = await newAccount.save();
