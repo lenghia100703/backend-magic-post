@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const authRoute = require('./routes/authRoute');
 const districtRoute = require('./routes/districtRoute');
 const provinceRoute = require('./routes/provinceRoute');
+const roleRoute = require('./routes/roleRoute');
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use('/auth', authRoute);
 app.use('/district', districtRoute);
 app.use('/province', provinceRoute);
+app.use('/role', roleRoute);
 
 // connect to database
 
