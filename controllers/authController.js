@@ -17,7 +17,7 @@ const authController = {
             });
 
             const account = await newAccount.save();
-            await Role.findByIdAndUpdate('6546fc4b4941402447950717', {
+            await Role.findByIdAndUpdate(process.env.CUSTOMER_ROLE, {
                 $push: {
                     accounts: account._id,
                 },
