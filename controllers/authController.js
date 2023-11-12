@@ -166,7 +166,7 @@ const authController = {
                 const account = await Account.findOne({ _id: user._id, refreshToken: cookie.refreshToken });
 
                 if (account) {
-                    const newAccessToken = jwt.sign(payload, process.env.ACCESS_KEY, {
+                    const newAccessToken = jwt.sign(payload, process.env.SIGN_KEY, {
                         expiresIn: '1d',
                     });
 
