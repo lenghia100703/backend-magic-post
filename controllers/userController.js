@@ -1,7 +1,6 @@
 const Account = require('../models/Account');
 const fs = require('fs');
 const axios = require('axios');
-const bcrypt = require('bcrypt');
 
 const userController = {
     // [PUT] /user/:userId
@@ -52,39 +51,6 @@ const userController = {
             }
         } else {
             res.status(403).json('You are not allowed to update your account');
-            return;
-        }
-    },
-
-    // [POST] /user/admin/create-manager
-    createManagerAccount: async (req, res) => {
-        try {
-            const salt = await bcrypt.genSalt(10);
-            const hashed = await bcrypt.hash(req.body.password, salt);
-
-            const newManagerAccount = new Account({
-                username: req.body.username,
-                email: req.body.email,
-                password: hashed,
-                phone: req.body.phone,
-                address: req.body.address,
-                role: req.body.role,
-            });
-
-            const account = await newManagerAccount.save();
-            await Role.findByIdAndUpdate(req.body.role, {
-                $push: {
-                    accounts: account._id,
-                },
-            });
-
-            res.status(200).json({
-                data: account,
-                message: 'create manager account success',
-            });
-            return;
-        } catch (error) {
-            res.status(500).json({ error: error, message: 'fail to create manager account' });
             return;
         }
     },

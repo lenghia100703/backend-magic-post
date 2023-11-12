@@ -2,6 +2,7 @@ const Account = require('../models/Account');
 const Role = require('../models/Role');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const RoleId = require('../constants/index');
 
 const authController = {
     // [POST] /auth/register
@@ -17,7 +18,7 @@ const authController = {
             });
 
             const account = await newAccount.save();
-            await Role.findByIdAndUpdate(process.env.CUSTOMER_ROLE, {
+            await Role.findByIdAndUpdate(RoleId.CUSTOMER_ROLE, {
                 $push: {
                     accounts: account._id,
                 },

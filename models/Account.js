@@ -23,6 +23,11 @@ const Account = new mongoose.Schema(
             type: String,
             default: 'https://avatars.githubusercontent.com/u/100254753?v=4',
         },
+        workPlace: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'District',
+            default: '',
+        },
     },
     {
         timestamps: true,
