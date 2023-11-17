@@ -18,11 +18,17 @@ const authController = {
             });
 
             const account = await newAccount.save();
-            await Role.findByIdAndUpdate(RoleId.CUSTOMER_ROLE, {
-                $push: {
-                    accounts: account._id,
+            await Role.findByIdAndUpdate(
+                RoleId.CUSTOMER_ROLE,
+                {
+                    $push: {
+                        accounts: account._id,
+                    },
                 },
-            });
+                {
+                    new: true,
+                },
+            );
             res.status(200).json({
                 data: account,
                 message: 'sign up success',

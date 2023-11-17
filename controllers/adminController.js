@@ -39,7 +39,6 @@ const adminController = {
         try {
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash(req.body.password, salt);
-
             const newManagerAccount = new Account({
                 username: req.body.username,
                 email: req.body.email,
@@ -51,11 +50,15 @@ const adminController = {
 
             const account = await newManagerAccount.save();
 
-            await Role.findByIdAndUpdate(req.body.role, {
-                $push: {
-                    accounts: account._id,
+            await Role.findByIdAndUpdate(
+                req.body.role,
+                {
+                    $push: {
+                        accounts: account._id,
+                    },
                 },
-            });
+                { new: true },
+            );
 
             if (req.body.role === RoleId.GATHERING_MANAGER_ROLE) {
                 await GatheringPoint.findOneAndUpdate(

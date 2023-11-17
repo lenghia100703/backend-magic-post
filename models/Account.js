@@ -26,7 +26,6 @@ const Account = new mongoose.Schema(
         workPlace: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'District',
-            default: '',
         },
     },
     {

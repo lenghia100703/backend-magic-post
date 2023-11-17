@@ -9,7 +9,6 @@ const verifyToken = (req, res, next) => {
                 return res.status(403).json(err);
             }
             req.user = user;
-            console.log('da dang nhap roi');
             next();
         });
     } else {
