@@ -6,13 +6,17 @@ const TransactionPoint = require('../models/TransactionPoint');
 const Role = require('../models/Role');
 
 const adminController = {
-    // [GET] /user/admin/gathering-manager
+    // [GET] /user/admin/gathering-manager?page=
     getGatheringManager: async (req, res) => {
         try {
-            const accounts = await Account.find({ role: RoleId.GATHERING_MANAGER_ROLE });
+            const pageSize = 10;
+            const skip = (req.query.page - 1) * pageSize;
+            const accounts = await Account.find({ role: RoleId.GATHERING_MANAGER_ROLE }).skip(skip).limit(pageSize);
+            const totalData = await Account.countDocuments({ role: RoleId.GATHERING_MANAGER_ROLE });
             res.status(200).json({
                 data: accounts,
                 message: 'get all gathering manager accounts success',
+                totalData: totalData,
             });
         } catch (error) {
             res.status(404).json({ error: error, message: 'fail to get gathering manager account' });
@@ -20,13 +24,17 @@ const adminController = {
         }
     },
 
-    // [GET] /user/admin/transaction-manager
+    // [GET] /user/admin/transaction-manager?page=
     getTransactionManager: async (req, res) => {
         try {
-            const accounts = await Account.find({ role: RoleId.TRANSACTION_MANAGER_ROLE });
+            const pageSize = 10;
+            const skip = (req.query.page - 1) * pageSize;
+            const accounts = await Account.find({ role: RoleId.TRANSACTION_MANAGER_ROLE }).skip(skip).limit(pageSize);
+            const totalData = await Account.countDocuments({ role: RoleId.TRANSACTION_MANAGER_ROLE });
             res.status(200).json({
                 data: accounts,
                 message: 'get all transaction manager accounts success',
+                totalData: totalData,
             });
         } catch (error) {
             res.status(404).json({ error: error, message: 'fail to get transaction manager account' });
@@ -100,14 +108,10 @@ const adminController = {
     // [UPDATE] /user/admin/edit/:managerId
     editManagerAccount: async (req, res) => {
         try {
-            const salt = await bcrypt.genSalt(10);
-            const hashed = await bcrypt.hash(req.body.password, salt);
-
-            const oldManagerAccount = await Account.findById(req.user._id);
+            const oldManagerAccount = await Account.findById(req.user.managerId);
             const editManagerAccount = {
                 username: req.body.username,
                 email: req.body.email,
-                password: hashed,
                 phone: req.body.phone,
                 role: req.body.role,
                 workPlace: req.body.workPlace,

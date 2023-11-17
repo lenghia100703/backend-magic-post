@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const userController = require('../controllers/userController');
 const adminController = require('../controllers/adminController');
+const managerController = require('../controllers/managerController');
 const upload = require('../middlewares/uploadImage');
 const verifyToken = require('../middlewares/verifyToken');
 const checkRole = require('../middlewares/checkRole');
@@ -35,4 +36,44 @@ router.delete(
     adminController.deleteManagerAccount,
 );
 
+// manager routes
+// create staff account
+router.post(
+    '/manager/create-staff',
+    verifyToken,
+    checkRole(RoleId.GATHERING_MANAGER_ROLE || RoleId.TRANSACTION_MANAGER_ROLE),
+    managerController.createStaffAccount,
+);
+
+//get all gathering staff account
+router.get(
+    '/manager/gathering-staff',
+    verifyToken,
+    checkRole(RoleId.GATHERING_MANAGER_ROLE),
+    managerController.getGatheringStaff,
+);
+
+//get all transaction staff account
+router.get(
+    '/manager/transaction-staff',
+    verifyToken,
+    checkRole(RoleId.TRANSACTION_MANAGER_ROLE),
+    managerController.getTransactionStaff,
+);
+
+//edit staff account
+router.put(
+    '/manager/edit/:staffId',
+    verifyToken,
+    checkRole(RoleId.GATHERING_MANAGER_ROLE || RoleId.TRANSACTION_MANAGER_ROLE),
+    managerController.editStaffAccount,
+);
+
+// delete staff account
+router.delete(
+    '/manager/delete/:staffId',
+    verifyToken,
+    checkRole(RoleId.GATHERING_MANAGER_ROLE || RoleId.TRANSACTION_MANAGER_ROLE),
+    managerController.deleteStaffAccount,
+);
 module.exports = router;
