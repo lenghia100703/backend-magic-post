@@ -4,6 +4,7 @@ const RoleId = require('../constants/index');
 const GatheringPoint = require('../models/GatheringPoint');
 const TransactionPoint = require('../models/TransactionPoint');
 const Role = require('../models/Role');
+const District = require('../models/District');
 
 const adminController = {
     // [GET] /user/admin/gathering-manager?page=
@@ -186,7 +187,7 @@ const adminController = {
                 },
             });
 
-            if (deleteAccount.role === RoleId.GATHERING_MANAGER_ROLE) {
+            if (String(deleteAccount.role) === RoleId.GATHERING_MANAGER_ROLE) {
                 await GatheringPoint.findOneAndUpdate(
                     {
                         managerId: deleteAccount._id,
@@ -198,7 +199,7 @@ const adminController = {
                         new: true,
                     },
                 );
-            } else if (deleteAccount.role === RoleId.TRANSACTION_MANAGER_ROLE) {
+            } else if (String(deleteAccount.role) === RoleId.TRANSACTION_MANAGER_ROLE) {
                 await TransactionPoint.findOneAndUpdate(
                     {
                         managerId: deleteAccount._id,
@@ -217,6 +218,72 @@ const adminController = {
             });
         } catch (error) {
             res.status(500).json({ error: error, message: 'fail to delete manager account' });
+            return;
+        }
+    },
+
+    // [POST] /user/admin/create-gathering-point
+    createGatheringPoint: async (req, res) => {
+        try {
+            const district = await District.findById(req.body.location);
+            const transactionPoints = await TransactionPoint.find({ province: district.provinceId });
+            const listIdTransactionPoint = transactionPoints.map((transactionPoint) => transactionPoint._id);
+            const gatheringPoint = new GatheringPoint({
+                location: req.body.location,
+                province: district.provinceId,
+                transactions: listIdTransactionPoint,
+            });
+            const newGatheringPoint = await gatheringPoint.save();
+
+            const updatePromises = transactionPoints.map(async (transactionPoint) => {
+                return TransactionPoint.updateOne(
+                    { _id: transactionPoint._id },
+                    { gatheringId: newGatheringPoint._id },
+                );
+            });
+            await Promise.all(updatePromises);
+
+            res.status(200).json({
+                data: newGatheringPoint,
+                message: 'create gathering point success',
+            });
+        } catch (error) {
+            res.status(500).json({ error: error, message: 'fail to create gathering point' });
+            return;
+        }
+    },
+
+    // [POST] /user/admin/create-transaction-point
+    createTransactionPoint: async (req, res) => {
+        try {
+            const district = await District.findById(req.body.location);
+            const gatheringPoint = await GatheringPoint.findOne({ province: district.provinceId });
+            const transactionPoint = new TransactionPoint({
+                location: req.body.location,
+                province: district.provinceId,
+                gatheringId: gatheringPoint._id,
+            });
+
+            const newTransactionPoint = await transactionPoint.save();
+
+            await GatheringPoint.findByIdAndUpdate(
+                gatheringPoint._id,
+                {
+                    $push: {
+                        transactions: newTransactionPoint._id,
+                    },
+                },
+                {
+                    new: true,
+                },
+            );
+
+            res.status(200).json({
+                data: newTransactionPoint,
+                message: 'create transaction point success',
+            });
+        } catch (error) {
+            res.status(500).json({ error: error, message: 'fail to create transaction point' });
             return;
         }
     },

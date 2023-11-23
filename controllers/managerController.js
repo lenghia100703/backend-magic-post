@@ -1,6 +1,9 @@
 const RoleId = require('../constants');
 const Account = require('../models/Account');
 const bcrypt = require('bcrypt');
+const Role = require('../models/Role');
+const TransactionPoint = require('../models/TransactionPoint');
+const GatheringPoint = require('../models/GatheringPoint');
 
 const managerController = {
     // [GET] /user/manager/gathering-staff?page=
@@ -98,10 +101,11 @@ const managerController = {
                 );
             }
 
-            res.json(200).json({
+            res.status(200).json({
                 data: account,
                 message: 'create staff account success',
             });
+            return;
         } catch (error) {
             res.status(500).json({ error: error, message: 'fail to create staff account' });
             return;
@@ -141,16 +145,16 @@ const managerController = {
 
     deleteStaffAccount: async (req, res) => {
         try {
+            console.log(req.params.staffId);
             const deleteAccount = await Account.findById(req.params.staffId);
             await Account.findByIdAndDelete(req.params.staffId);
-
             await Role.findByIdAndUpdate(deleteAccount.role, {
                 $pull: {
                     accounts: deleteAccount._id,
                 },
             });
 
-            if (deleteAccount.role === RoleId.GATHERING_STAFF_ROLE) {
+            if (String(deleteAccount.role) === RoleId.GATHERING_STAFF_ROLE) {
                 await GatheringPoint.findOneAndUpdate(
                     {
                         workPlace: deleteAccount.workPlace,
@@ -164,7 +168,7 @@ const managerController = {
                         new: true,
                     },
                 );
-            } else if (deleteAccount.role === RoleId.TRANSACTION_STAFF_ROLE) {
+            } else if (String(deleteAccount.role) === RoleId.TRANSACTION_STAFF_ROLE) {
                 await TransactionPoint.findOneAndUpdate(
                     {
                         workPlace: deleteAccount.workPlace,
@@ -179,6 +183,9 @@ const managerController = {
                     },
                 );
             }
+
+            res.status(200).json({ data: {}, message: 'delete staff account success' });
+            return;
         } catch (error) {
             res.status(500).json({ error: error, message: 'fail to delete staff account' });
             return;

@@ -16,6 +16,10 @@ const GatheringPoint = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'District',
         },
+        province: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Province',
+        },
         transactions: [
             {
                 type: mongoose.Schema.Types.ObjectId,

@@ -36,6 +36,22 @@ router.delete(
     adminController.deleteManagerAccount,
 );
 
+// create gathering point
+router.post(
+    '/admin/create-gathering-point',
+    verifyToken,
+    checkRole(RoleId.ADMIN_ROLE),
+    adminController.createGatheringPoint,
+);
+
+// create transaction point
+router.post(
+    '/admin/create-transaction-point',
+    verifyToken,
+    checkRole(RoleId.ADMIN_ROLE),
+    adminController.createTransactionPoint,
+);
+
 // manager routes
 // create staff account
 router.post(
