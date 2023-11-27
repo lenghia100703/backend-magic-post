@@ -2,6 +2,9 @@ const router = require('express').Router();
 const userController = require('../controllers/userController');
 const adminController = require('../controllers/adminController');
 const managerController = require('../controllers/managerController');
+const transactionStaffController = require('../controllers/transactionStaffController');
+const gatheringStaffController = require('../controllers/gatheringStaffController');
+const customerController = require('../controllers/customerController');
 const upload = require('../middlewares/uploadImage');
 const verifyToken = require('../middlewares/verifyToken');
 const checkRole = require('../middlewares/checkRole');
@@ -92,4 +95,82 @@ router.delete(
     checkRole(RoleId.GATHERING_MANAGER_ROLE || RoleId.TRANSACTION_MANAGER_ROLE),
     managerController.deleteStaffAccount,
 );
+
+// transaction staff routes
+// create package to receiver
+router.post(
+    '/staff/transaction/create-package-to-receiver',
+    verifyToken,
+    checkRole(RoleId.TRANSACTION_STAFF_ROLE),
+    transactionStaffController.createPackageToReceiver,
+);
+
+// confirm package from gathering point
+router.put(
+    '/staff/transaction/confirm-package-from-gathering/:packageId',
+    verifyToken,
+    checkRole(RoleId.TRANSACTION_STAFF_ROLE),
+    transactionStaffController.confirmPackageFromGathering,
+);
+
+// send package to gathering point
+router.put(
+    '/staff/transaction/send-package-to-gathering/:packageId',
+    verifyToken,
+    checkRole(RoleId.TRANSACTION_STAFF_ROLE),
+    transactionStaffController.sendPackageToGathering,
+);
+
+// confirm to receiver success
+router.put(
+    '/staff/transaction/confirm-to-receiver-success/:packageId',
+    verifyToken,
+    checkRole(RoleId.TRANSACTION_STAFF_ROLE),
+    transactionStaffController.confirmToReceiverSuccess,
+);
+
+// confirm to receiver fail
+router.put(
+    '/staff/transaction/confirm-to-receiver-fail/:packageId',
+    verifyToken,
+    checkRole(RoleId.TRANSACTION_STAFF_ROLE),
+    transactionStaffController.confirmToReceiverFail,
+);
+
+// gathering staff routes
+// confirm package from transaction point
+router.put(
+    '/staff/gathering/confirm-package-from-transaction/:packageId',
+    verifyToken,
+    checkRole(RoleId.GATHERING_STAFF_ROLE),
+    gatheringStaffController.confirmPackageFromTransaction,
+);
+
+// confirm package from gathering point
+router.put(
+    '/staff/gathering/confirm-package-from-gathering/:packageId',
+    verifyToken,
+    checkRole(RoleId.GATHERING_STAFF_ROLE),
+    gatheringStaffController.confirmPackageFromGathering,
+);
+
+// send package to transaction point
+router.put(
+    '/staff/gathering/send-package-to-transaction/:packageId',
+    verifyToken,
+    checkRole(RoleId.GATHERING_STAFF_ROLE),
+    gatheringStaffController.sendPackageToTransaction,
+);
+
+// send package to gathering point
+router.put(
+    '/staff/gathering/send-package-to-gathering/:packageId',
+    verifyToken,
+    checkRole(RoleId.GATHERING_STAFF_ROLE),
+    gatheringStaffController.sendPackageToGathering,
+);
+
+//customer routes
+// get orders
+router.get('/customer/search-order', verifyToken, checkRole(RoleId.CUSTOMER_ROLE), customerController.getOrder);
 module.exports = router;
