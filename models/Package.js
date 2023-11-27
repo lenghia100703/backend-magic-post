@@ -6,6 +6,11 @@ const Package = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Account',
         },
+        code: {
+            type: String,
+            required: true,
+            unique: true,
+        },
         receiverId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Account',
@@ -19,13 +24,21 @@ const Package = new mongoose.Schema(
         status: {
             type: String,
             enum: ['success', 'fail', 'shipping'],
-            default: 'fail',
+            default: 'shipping',
         },
-        sendingAddress: {
+        transactionSendingAddress: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'District',
         },
-        deliveryAddress: {
+        gatheringSendingAddress: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'District',
+        },
+        gatheringDeliveryAddress: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'District',
+        },
+        transactionDeliveryAddress: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'District',
         },
@@ -35,6 +48,14 @@ const Package = new mongoose.Schema(
         shippingMethod: {
             type: String,
             enum: ['fast', 'express'],
+        },
+        currentPoint: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'District',
+        },
+        nextPoint: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'District',
         },
     },
     {
