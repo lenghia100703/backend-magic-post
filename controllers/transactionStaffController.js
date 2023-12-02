@@ -10,18 +10,20 @@ const transactionStaffController = {
             const transactionSendingPoint = await District.findOne({ _id: req.body.transactionSendingAddress });
             const transactionDeliveryPoint = await District.findOne({ _id: req.body.transactionDeliveryAddress });
 
-            const gatheringSendingAddress = transactionSendingPoint.gatheringId;
-            const gatheringDeliveryAddress = transactionDeliveryPoint.gatheringId;
+            const gatheringSendingAddress = transactionSendingPoint.provinceId;
+            const gatheringDeliveryAddress = transactionDeliveryPoint.provinceId;
+
             const newPackage = new Package({
+                creatorId: req.user._id,
                 senderId: req.body.senderId,
                 receiverId: req.body.receiverId,
                 name: req.body.name,
-                weight: req.body.weight,
+                weight: Number(req.body.weight),
                 transactionSendingAddress: req.body.transactionSendingAddress,
                 gatheringSendingAddress: gatheringSendingAddress,
                 gatheringDeliveryAddress: gatheringDeliveryAddress,
                 transactionDeliveryAddress: req.body.transactionDeliveryAddress,
-                shippingFee: req.body.shippingFee,
+                shippingFee: Number(req.body.shippingFee),
                 shippingMethod: req.body.shippingMethod,
                 code: packageCode,
                 currentPoint: req.body.transactionSendingAddress,

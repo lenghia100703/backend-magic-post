@@ -46,11 +46,27 @@ const userController = {
                 res.status(200).json(editUser);
                 return;
             } catch (err) {
-                res.status(500).json({ error: err });
+                res.status(500).json({ error: err, message: 'fail to update account' });
                 return;
             }
         } else {
             res.status(403).json('You are not allowed to update your account');
+            return;
+        }
+    },
+
+    // [GET] /user/phone/:phoneNumber
+    getUserByPhoneNumber: async (req, res) => {
+        try {
+            const account = await Account.findOne({ phone: req.params.phoneNumber });
+
+            res.status(200).json({
+                data: account,
+                message: 'get user by phone number success',
+            });
+            return;
+        } catch (err) {
+            res.status(500).json({ error: err, message: 'fail to get user by phone number' });
             return;
         }
     },

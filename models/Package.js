@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const Package = new mongoose.Schema(
     {
+        creatorId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Account',
+        },
         senderId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Account',

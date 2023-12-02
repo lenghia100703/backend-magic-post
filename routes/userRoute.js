@@ -13,6 +13,8 @@ const RoleId = require('../constants/index');
 // edit user
 router.put('/:userId', upload.single('avatar'), verifyToken, userController.editUser);
 
+router.get('/phone/:phoneNumber', verifyToken, userController.getUserByPhoneNumber);
+
 // admin routes
 // create manager account
 router.post('/admin/create-manager', verifyToken, checkRole(RoleId.ADMIN_ROLE), adminController.createManagerAccount);

@@ -17,7 +17,7 @@ const adminController = {
             res.status(200).json({
                 data: accounts,
                 message: 'get all gathering manager accounts success',
-                totalData: totalData,
+                total: totalData,
             });
         } catch (error) {
             res.status(404).json({ error: error, message: 'fail to get gathering manager account' });
@@ -35,7 +35,7 @@ const adminController = {
             res.status(200).json({
                 data: accounts,
                 message: 'get all transaction manager accounts success',
-                totalData: totalData,
+                total: totalData,
             });
         } catch (error) {
             res.status(404).json({ error: error, message: 'fail to get transaction manager account' });

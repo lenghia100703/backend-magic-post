@@ -16,7 +16,7 @@ const managerController = {
             res.status(200).json({
                 data: accounts,
                 message: 'get all gathering staff success',
-                totalData: totalData,
+                total: totalData,
             });
             return;
         } catch (error) {
@@ -35,7 +35,7 @@ const managerController = {
             res.status(200).json({
                 data: accounts,
                 message: 'get all transaction staff success',
-                totalData: totalData,
+                total: totalData,
             });
             return;
         } catch (error) {
