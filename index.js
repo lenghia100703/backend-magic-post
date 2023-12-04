@@ -9,6 +9,7 @@ const districtRoute = require('./routes/districtRoute');
 const provinceRoute = require('./routes/provinceRoute');
 const roleRoute = require('./routes/roleRoute');
 const userRoute = require('./routes/userRoute');
+const packageRoute = require('./routes/packageRoute');
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use('/district', districtRoute);
 app.use('/province', provinceRoute);
 app.use('/role', roleRoute);
 app.use('/user', userRoute);
+app.use('/package', packageRoute);
 
 // connect to database
 
