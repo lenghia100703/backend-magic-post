@@ -15,6 +15,8 @@ router.put('/:userId', upload.single('avatar'), verifyToken, userController.edit
 
 router.get('/phone/:phoneNumber', verifyToken, userController.getUserByPhoneNumber);
 
+router.get('/:userId', verifyToken, userController.getUserById);
+
 // admin routes
 // create manager account
 router.post('/admin/create-manager', verifyToken, checkRole(RoleId.ADMIN_ROLE), adminController.createManagerAccount);
@@ -62,7 +64,7 @@ router.post(
 router.post(
     '/manager/create-staff',
     verifyToken,
-    checkRole(RoleId.GATHERING_MANAGER_ROLE || RoleId.TRANSACTION_MANAGER_ROLE),
+    checkRole([RoleId.GATHERING_MANAGER_ROLE, RoleId.TRANSACTION_MANAGER_ROLE]),
     managerController.createStaffAccount,
 );
 
@@ -86,7 +88,7 @@ router.get(
 router.put(
     '/manager/edit/:staffId',
     verifyToken,
-    checkRole(RoleId.GATHERING_MANAGER_ROLE || RoleId.TRANSACTION_MANAGER_ROLE),
+    checkRole([RoleId.GATHERING_MANAGER_ROLE, RoleId.TRANSACTION_MANAGER_ROLE]),
     managerController.editStaffAccount,
 );
 
@@ -94,7 +96,7 @@ router.put(
 router.delete(
     '/manager/delete/:staffId',
     verifyToken,
-    checkRole(RoleId.GATHERING_MANAGER_ROLE || RoleId.TRANSACTION_MANAGER_ROLE),
+    checkRole([RoleId.GATHERING_MANAGER_ROLE, RoleId.TRANSACTION_MANAGER_ROLE]),
     managerController.deleteStaffAccount,
 );
 
@@ -174,5 +176,5 @@ router.put(
 
 //customer routes
 // get orders
-router.get('/customer/search-order', verifyToken, checkRole(RoleId.CUSTOMER_ROLE), customerController.getOrder);
+router.get('/customer/search-order', verifyToken, checkRole(RoleId.CUSTOMER_ROLE), customerController.getPackage);
 module.exports = router;

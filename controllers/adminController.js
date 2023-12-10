@@ -109,7 +109,7 @@ const adminController = {
     // [UPDATE] /user/admin/edit/:managerId
     editManagerAccount: async (req, res) => {
         try {
-            const oldManagerAccount = await Account.findById(req.user.managerId);
+            const oldManagerAccount = await Account.findById(req.params.managerId);
             const editManagerAccount = {
                 username: req.body.username,
                 email: req.body.email,

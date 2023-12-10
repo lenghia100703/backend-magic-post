@@ -70,6 +70,22 @@ const userController = {
             return;
         }
     },
+
+    //[GET] /user/:userId
+    getUserById: async (req, res) => {
+        try {
+            const account = await Account.findById(req.params.userId);
+
+            res.status(200).json({
+                data: account,
+                message: 'get user by user id success',
+            });
+            return;
+        } catch (err) {
+            res.status(500).json({ error: err, message: 'fail to get user by user id' });
+            return;
+        }
+    },
 };
 
 module.exports = userController;

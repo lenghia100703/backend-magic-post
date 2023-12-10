@@ -11,7 +11,11 @@ const managerController = {
         try {
             const pageSize = 10;
             const skip = (req.query.page - 1) * pageSize;
-            const accounts = await Account.find({ role: RoleId.GATHERING_STAFF_ROLE }).skip(skip).limit(pageSize);
+            const account = await Account.findById(req.user._id);
+            const accounts = await Account.find({ role: RoleId.GATHERING_STAFF_ROLE, workPlace: account.workPlace })
+                .skip(skip)
+                .limit(pageSize)
+                .sort({ createdAt: -1 });
             const totalData = await Account.countDocuments({ role: RoleId.GATHERING_STAFF_ROLE });
             res.status(200).json({
                 data: accounts,
@@ -30,8 +34,15 @@ const managerController = {
         try {
             const pageSize = 10;
             const skip = (req.query.page - 1) * pageSize;
-            const accounts = await Account.find({ role: RoleId.TRANSACTION_STAFF_ROLE }).skip(skip).limit(pageSize);
-            const totalData = await Account.countDocuments({ role: RoleId.GATHERING_STAFF_ROLE });
+            const manager = await Account.findById(req.user._id);
+            const accounts = await Account.find({ role: RoleId.TRANSACTION_STAFF_ROLE, workPlace: manager.workPlace })
+                .skip(skip)
+                .limit(pageSize)
+                .sort({ createdAt: -1 });
+            const totalData = await Account.find({
+                role: RoleId.TRANSACTION_STAFF_ROLE,
+                workPlace: manager.workPlace,
+            }).countDocuments();
             res.status(200).json({
                 data: accounts,
                 message: 'get all transaction staff success',

@@ -2,7 +2,7 @@ const Package = require('../models/Package');
 
 const customerController = {
     // [GET] user/customer/search-order?page=
-    getOrder: async (req, res) => {
+    getPackage: async (req, res) => {
         try {
             if (req.query.page) {
                 const limit = 10;

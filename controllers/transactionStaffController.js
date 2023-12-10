@@ -1,5 +1,7 @@
 const Package = require('../models/Package');
 const District = require('../models/District');
+const TransactionPoint = require('../models/TransactionPoint');
+const GatheringPoint = require('../models/GatheringPoint');
 const generateCode = require('../utils/generateCode');
 
 const transactionStaffController = {
@@ -7,11 +9,19 @@ const transactionStaffController = {
     createPackageToReceiver: async (req, res) => {
         try {
             const packageCode = generateCode();
-            const transactionSendingPoint = await District.findOne({ _id: req.body.transactionSendingAddress });
-            const transactionDeliveryPoint = await District.findOne({ _id: req.body.transactionDeliveryAddress });
+            const transactionSendingPoint = await TransactionPoint.findOne({
+                location: req.body.transactionSendingAddress,
+            });
+            const transactionDeliveryPoint = await TransactionPoint.findOne({
+                location: req.body.transactionDeliveryAddress,
+            });
 
-            const gatheringSendingAddress = transactionSendingPoint.provinceId;
-            const gatheringDeliveryAddress = transactionDeliveryPoint.provinceId;
+            const gatheringSendingAddress = await GatheringPoint.findOne({
+                province: transactionSendingPoint.province,
+            });
+            const gatheringDeliveryAddress = await GatheringPoint.findOne({
+                province: transactionDeliveryPoint.province,
+            });
 
             const newPackage = new Package({
                 creatorId: req.user._id,
@@ -20,14 +30,14 @@ const transactionStaffController = {
                 name: req.body.name,
                 weight: Number(req.body.weight),
                 transactionSendingAddress: req.body.transactionSendingAddress,
-                gatheringSendingAddress: gatheringSendingAddress,
-                gatheringDeliveryAddress: gatheringDeliveryAddress,
+                gatheringSendingAddress: gatheringSendingAddress.location,
+                gatheringDeliveryAddress: gatheringDeliveryAddress.location,
                 transactionDeliveryAddress: req.body.transactionDeliveryAddress,
                 shippingFee: Number(req.body.shippingFee),
                 shippingMethod: req.body.shippingMethod,
                 code: packageCode,
                 currentPoint: req.body.transactionSendingAddress,
-                nextPoint: gatheringSendingAddress,
+                nextPoint: gatheringSendingAddress.location,
             });
 
             const package = await newPackage.save();
@@ -48,15 +58,17 @@ const transactionStaffController = {
     //[PUT] user/staff/transaction/confirm-package-from-gathering/:packageId
     confirmPackageFromGathering: async (req, res) => {
         try {
+            console.log('err 1');
             const confirmPackage = await Package.findByIdAndUpdate(
                 req.params.packageId,
                 {
-                    nextPoint: '',
+                    nextPoint: null,
                 },
                 {
                     new: true,
                 },
             );
+            console.log(confirmPackage);
             res.status(200).json({
                 data: confirmPackage,
                 message: 'confirm package from gathering point success',
