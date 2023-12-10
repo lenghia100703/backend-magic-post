@@ -58,7 +58,6 @@ const transactionStaffController = {
     //[PUT] user/staff/transaction/confirm-package-from-gathering/:packageId
     confirmPackageFromGathering: async (req, res) => {
         try {
-            console.log('err 1');
             const confirmPackage = await Package.findByIdAndUpdate(
                 req.params.packageId,
                 {
@@ -68,7 +67,6 @@ const transactionStaffController = {
                     new: true,
                 },
             );
-            console.log(confirmPackage);
             res.status(200).json({
                 data: confirmPackage,
                 message: 'confirm package from gathering point success',

@@ -156,7 +156,6 @@ const managerController = {
 
     deleteStaffAccount: async (req, res) => {
         try {
-            console.log(req.params.staffId);
             const deleteAccount = await Account.findById(req.params.staffId);
             await Account.findByIdAndDelete(req.params.staffId);
             await Role.findByIdAndUpdate(deleteAccount.role, {
