@@ -61,14 +61,6 @@ const Package = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'District',
         },
-        passedSendingGathering: {
-            type: Boolean,
-            default: false,
-        },
-        passedDeliveryGathering: {
-            type: Boolean,
-            default: false,
-        },
     },
     {
         timestamps: true,
