@@ -1,5 +1,9 @@
 const Package = require('../models/Package');
+<<<<<<< HEAD
 const Account = require('../models/Account');
+=======
+const GatheringPoint = require('../models/GatheringPoint');
+>>>>>>> ad556652712f6cff2ecf0b16a6f92cc911f388ba
 
 const packageController = {
     // [GET] package/staff/transaction/shipping?page
@@ -342,14 +346,20 @@ const packageController = {
             return;
         }
     },
+<<<<<<< HEAD
 
     // gathering manager role
     // [GET] package/manager/gathering/to?page
     getPackageToGatheringInGatheringPoint: async (req, res) => {
+=======
+    // [GET] package/manager/gathering/to?page
+    getPackageToTransactionInGatheringPoint: async (req, res) => {
+>>>>>>> ad556652712f6cff2ecf0b16a6f92cc911f388ba
         try {
             if (req.query.page) {
                 const limit = 10;
                 const skip = (req.query.page - 1) * limit;
+<<<<<<< HEAD
                 const account = await Account.findById(req.user._id);
                 const totalData = await Package.find({
                     $or: [
@@ -365,14 +375,34 @@ const packageController = {
                         { gatheringDeliveryAddress: account.workPlace, currentPoint: account.workPlace },
                     ],
                     $expr: { $ne: ['$currentPoint', '$nextPoint'] },
+=======
+
+                const totalData = await Package.find({
+                    $or: [
+                        {gatheringSendingAddress: req.user.workPlace},
+                        {gatheringDeliveryAddress: req.user.workPlace}
+                    ],
+                }).countDocuments();
+
+                const packageFromGathering = await Package.find({ 
+                    $or: [
+                        {gatheringSendingAddress: req.user.workPlace},
+                        {gatheringDeliveryAddress: req.user.workPlace}
+                    ],
+>>>>>>> ad556652712f6cff2ecf0b16a6f92cc911f388ba
                 })
                     .limit(limit)
                     .skip(skip)
                     .sort({ updatedAt: -1 });
 
                 res.status(200).json({
+<<<<<<< HEAD
                     data: packageToGathering,
                     message: 'get package to gathering in gathering point success',
+=======
+                    data: packageFromGathering,
+                    message: 'get package from transaction to sending gathering point/ from sending gathering point to delivery gathering point successfully',
+>>>>>>> ad556652712f6cff2ecf0b16a6f92cc911f388ba
                     total: totalData,
                 });
                 return;
@@ -387,11 +417,16 @@ const packageController = {
     },
 
     // [GET] package/manager/gathering/from?page
+<<<<<<< HEAD
     getPackageFromGatheringInGatheringPoint: async (req, res) => {
+=======
+    getPackageFromGatheringInTransactionPoint: async (req, res) => {
+>>>>>>> ad556652712f6cff2ecf0b16a6f92cc911f388ba
         try {
             if (req.query.page) {
                 const limit = 10;
                 const skip = (req.query.page - 1) * limit;
+<<<<<<< HEAD
                 const account = await Account.findById(req.user._id);
                 const totalData = await Package.find({
                     $or: [
@@ -425,6 +460,40 @@ const packageController = {
                 res.status(200).json({
                     data: packageToGathering,
                     message: 'get package from gathering in gathering point success',
+=======
+                const totalData = await Package.find({
+                    $or: [
+                        {
+                            gatheringSendingAddress: req.user.workPlace,
+                            passedSendingGathering: true,
+                        },
+                        {
+                            gatheringDeliveryAddress: req.user.workPlace,
+                            passedDeliveryGathering: true,
+                        }
+                    ],
+                }).countDocuments();
+
+                const packageFromGathering = await Package.find({
+                    $or: [
+                        {
+                            gatheringSendingAddress: req.user.workPlace,
+                            passedSendingGathering: true,
+                        },
+                        {
+                            gatheringDeliveryAddress: req.user.workPlace,
+                            passedDeliveryGathering: true,
+                        }
+                    ],
+                })
+                .limit(limit)
+                .skip(skip)
+                .sort({ updatedAt: -1 });
+
+                res.status(200).json({
+                    data: packageFromGathering,
+                    message: 'get package from gathering to other point successfully',
+>>>>>>> ad556652712f6cff2ecf0b16a6f92cc911f388ba
                     total: totalData,
                 });
                 return;
@@ -437,6 +506,10 @@ const packageController = {
             return;
         }
     },
+<<<<<<< HEAD
+=======
+    
+>>>>>>> ad556652712f6cff2ecf0b16a6f92cc911f388ba
 };
 
 module.exports = packageController;
