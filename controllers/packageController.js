@@ -307,20 +307,14 @@ const packageController = {
                 const totalData = await Package.find({
                     transactionSendingAddress: account.workPlace,
                     $expr: {
-                        $and: [
-                            { $eq: ['$currentPoint', '$nextPoint'] },
-                            { $eq: ['$currentPoint', '$gatheringSendingAddress'] },
-                        ],
+                        $ne: ['$currentPoint', '$transactionSendingAddress'],
                     },
                 }).countDocuments();
 
                 const packageFromGathering = await Package.find({
                     transactionSendingAddress: account.workPlace,
                     $expr: {
-                        $and: [
-                            { $eq: ['$currentPoint', '$nextPoint'] },
-                            { $eq: ['$currentPoint', '$gatheringSendingAddress'] },
-                        ],
+                        $ne: ['$currentPoint', '$transactionSendingAddress'],
                     },
                 })
                     .limit(limit)

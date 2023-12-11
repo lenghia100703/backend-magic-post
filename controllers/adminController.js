@@ -10,15 +10,20 @@ const adminController = {
     // [GET] /user/admin/gathering-manager?page=
     getGatheringManager: async (req, res) => {
         try {
-            const pageSize = 10;
-            const skip = (req.query.page - 1) * pageSize;
-            const accounts = await Account.find({ role: RoleId.GATHERING_MANAGER_ROLE }).skip(skip).limit(pageSize);
-            const totalData = await Account.countDocuments({ role: RoleId.GATHERING_MANAGER_ROLE });
-            res.status(200).json({
-                data: accounts,
-                message: 'get all gathering manager accounts success',
-                total: totalData,
-            });
+            if (req.query.page) {
+                const pageSize = 10;
+                const skip = (req.query.page - 1) * pageSize;
+                const accounts = await Account.find({ role: RoleId.GATHERING_MANAGER_ROLE })
+                    .skip(skip)
+                    .limit(pageSize)
+                    .sort({ createdAt: -1 });
+                const totalData = await Account.countDocuments({ role: RoleId.GATHERING_MANAGER_ROLE });
+                res.status(200).json({
+                    data: accounts,
+                    message: 'get all gathering manager accounts success',
+                    total: totalData,
+                });
+            }
         } catch (error) {
             res.status(404).json({ error: error, message: 'fail to get gathering manager account' });
             return;
@@ -28,15 +33,20 @@ const adminController = {
     // [GET] /user/admin/transaction-manager?page=
     getTransactionManager: async (req, res) => {
         try {
-            const pageSize = 10;
-            const skip = (req.query.page - 1) * pageSize;
-            const accounts = await Account.find({ role: RoleId.TRANSACTION_MANAGER_ROLE }).skip(skip).limit(pageSize);
-            const totalData = await Account.countDocuments({ role: RoleId.TRANSACTION_MANAGER_ROLE });
-            res.status(200).json({
-                data: accounts,
-                message: 'get all transaction manager accounts success',
-                total: totalData,
-            });
+            if (req.query.page) {
+                const pageSize = 10;
+                const skip = (req.query.page - 1) * pageSize;
+                const accounts = await Account.find({ role: RoleId.TRANSACTION_MANAGER_ROLE })
+                    .skip(skip)
+                    .limit(pageSize)
+                    .sort({ createdAt: -1 });
+                const totalData = await Account.countDocuments({ role: RoleId.TRANSACTION_MANAGER_ROLE });
+                res.status(200).json({
+                    data: accounts,
+                    message: 'get all transaction manager accounts success',
+                    total: totalData,
+                });
+            }
         } catch (error) {
             res.status(404).json({ error: error, message: 'fail to get transaction manager account' });
             return;
