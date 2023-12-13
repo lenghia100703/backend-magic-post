@@ -21,7 +21,7 @@ const Account = new mongoose.Schema(
         },
         avatar: {
             type: String,
-            default: 'https://avatars.githubusercontent.com/u/100254753?v=4',
+            default: 'https://s.net.vn/70GD',
         },
         workPlace: {
             type: mongoose.Schema.Types.ObjectId,
