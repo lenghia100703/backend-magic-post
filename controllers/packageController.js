@@ -1,5 +1,6 @@
 const Package = require('../models/Package');
 const Account = require('../models/Account');
+const District = require('../models/District');
 
 const packageController = {
     // [GET] package/staff/transaction/shipping?page
@@ -164,13 +165,18 @@ const packageController = {
         }
     },
 
-    // [GET] package/staff/gathering/delivery?page
+    // [GET] package/staff/gathering/delivery?page&id
     getPackageToGathering: async (req, res) => {
         try {
             if (req.query.page) {
                 const limit = 10;
                 const skip = (req.query.page - 1) * limit;
-                const account = await Account.findById(req.user._id);
+                let account;
+                if (req.query.id) {
+                    account = await Account.findById(req.query.id);
+                } else {
+                    account = await Account.findById(req.user._id);
+                }
                 const totalData = await Package.find({
                     $or: [
                         { gatheringSendingAddress: account.workPlace, currentPoint: account.workPlace },
@@ -206,13 +212,18 @@ const packageController = {
         }
     },
 
-    // [GET] package/staff/gathering/send?page
+    // [GET] package/staff/gathering/send?page&id
     getPackageFromGathering: async (req, res) => {
         try {
             if (req.query.page) {
                 const limit = 10;
                 const skip = (req.query.page - 1) * limit;
-                const account = await Account.findById(req.user._id);
+                let account;
+                if (req.query.id) {
+                    account = await Account.findById(req.query.id);
+                } else {
+                    account = await Account.findById(req.user._id);
+                }
                 const totalData = await Package.find({
                     $or: [
                         { gatheringSendingAddress: account.workPlace, currentPoint: account.workPlace },
@@ -249,15 +260,20 @@ const packageController = {
     },
 
     // transaction manager role
-    // [GET] package/manager/transaction/from?page
+    // [GET] package/manager/transaction/from?page&id
     getPackageFromGatheringInTransactionPoint: async (req, res) => {
         try {
             if (req.query.page) {
                 const limit = 10;
                 const skip = (req.query.page - 1) * limit;
-                const account = await Account.findById(req.user._id);
+                let district;
+                if (req.query.id && req.query.id !== undefined) {
+                    district = req.query.id;
+                } else {
+                    district = (await Account.findById(req.user._id)).workPlace;
+                }
                 const totalData = await Package.find({
-                    transactionDeliveryAddress: account.workPlace,
+                    transactionDeliveryAddress: district,
                     $expr: {
                         $and: [
                             { $eq: ['$currentPoint', '$nextPoint'] },
@@ -268,7 +284,7 @@ const packageController = {
                 }).countDocuments();
 
                 const packageFromGathering = await Package.find({
-                    transactionDeliveryAddress: account.workPlace,
+                    transactionDeliveryAddress: district,
                     $expr: {
                         $and: [
                             { $eq: ['$currentPoint', '$nextPoint'] },
@@ -297,22 +313,28 @@ const packageController = {
         }
     },
 
-    // [GET] package/manager/transaction/to?page
+    // [GET] package/manager/transaction/to?page&id
     getPackageToGatheringInTransactionPoint: async (req, res) => {
         try {
             if (req.query.page) {
                 const limit = 10;
                 const skip = (req.query.page - 1) * limit;
-                const account = await Account.findById(req.user._id);
+                let district;
+                if (req.query.id && req.query.id !== undefined) {
+                    district = req.query.id;
+                } else {
+                    district = (await Account.findById(req.user._id)).workPlace;
+                }
+
                 const totalData = await Package.find({
-                    transactionSendingAddress: account.workPlace,
+                    transactionSendingAddress: district,
                     $expr: {
                         $ne: ['$currentPoint', '$transactionSendingAddress'],
                     },
                 }).countDocuments();
 
                 const packageFromGathering = await Package.find({
-                    transactionSendingAddress: account.workPlace,
+                    transactionSendingAddress: district,
                     $expr: {
                         $ne: ['$currentPoint', '$transactionSendingAddress'],
                     },
@@ -337,26 +359,31 @@ const packageController = {
         }
     },
 
-    // gathering manager role
-    // [GET] package/manager/gathering/to?page
+    // gathering manager role and admin role
+    // [GET] package/manager/gathering/to?page&id
     getPackageToGatheringInGatheringPoint: async (req, res) => {
         try {
             if (req.query.page) {
                 const limit = 10;
                 const skip = (req.query.page - 1) * limit;
-                const account = await Account.findById(req.user._id);
+                let district;
+                if (req.query.id && req.query.id !== undefined) {
+                    district = req.query.id;
+                } else {
+                    district = (await Account.findById(req.user._id)).workPlace;
+                }
                 const totalData = await Package.find({
                     $or: [
-                        { gatheringSendingAddress: account.workPlace, currentPoint: account.workPlace },
-                        { gatheringDeliveryAddress: account.workPlace, currentPoint: account.workPlace },
+                        { gatheringSendingAddress: district, currentPoint: district },
+                        { gatheringDeliveryAddress: district, currentPoint: district },
                     ],
                     $expr: { $ne: ['$currentPoint', '$nextPoint'] },
                 }).countDocuments();
 
                 const packageToGathering = await Package.find({
                     $or: [
-                        { gatheringSendingAddress: account.workPlace, currentPoint: account.workPlace },
-                        { gatheringDeliveryAddress: account.workPlace, currentPoint: account.workPlace },
+                        { gatheringSendingAddress: district, currentPoint: district },
+                        { gatheringDeliveryAddress: district, currentPoint: district },
                     ],
                     $expr: { $ne: ['$currentPoint', '$nextPoint'] },
                 })
@@ -380,18 +407,20 @@ const packageController = {
         }
     },
 
-    // [GET] package/manager/gathering/from?page
+    // [GET] package/manager/gathering/from?page&id
     getPackageFromGatheringInGatheringPoint: async (req, res) => {
         try {
             if (req.query.page) {
                 const limit = 10;
                 const skip = (req.query.page - 1) * limit;
-                const account = await Account.findById(req.user._id);
+                let district;
+                if (req.query.id && req.query.id !== undefined) {
+                    district = req.query.id;
+                } else {
+                    district = (await Account.findById(req.user._id)).workPlace;
+                }
                 const totalData = await Package.find({
-                    $or: [
-                        { gatheringSendingAddress: account.workPlace },
-                        { gatheringDeliveryAddress: account.workPlace },
-                    ],
+                    $or: [{ gatheringSendingAddress: district }, { gatheringDeliveryAddress: district }],
                     $expr: {
                         $and: [
                             { $eq: ['$currentPoint', '$nextPoint'] },
@@ -401,10 +430,7 @@ const packageController = {
                 }).countDocuments();
 
                 const packageToGathering = await Package.find({
-                    $or: [
-                        { gatheringSendingAddress: account.workPlace },
-                        { gatheringDeliveryAddress: account.workPlace },
-                    ],
+                    $or: [{ gatheringSendingAddress: district }, { gatheringDeliveryAddress: district }],
                     $expr: {
                         $and: [
                             { $eq: ['$currentPoint', '$nextPoint'] },

@@ -64,7 +64,7 @@ router.get(
 router.get(
     '/manager/transaction/from',
     verifyToken,
-    checkRole(RoleId.TRANSACTION_MANAGER_ROLE),
+    checkRole([RoleId.TRANSACTION_MANAGER_ROLE, RoleId.ADMIN_ROLE]),
     packageController.getPackageFromGatheringInTransactionPoint,
 );
 
@@ -72,7 +72,7 @@ router.get(
 router.get(
     '/manager/transaction/to',
     verifyToken,
-    checkRole(RoleId.TRANSACTION_MANAGER_ROLE),
+    checkRole([RoleId.TRANSACTION_MANAGER_ROLE, RoleId.ADMIN_ROLE]),
     packageController.getPackageToGatheringInTransactionPoint,
 );
 
@@ -80,14 +80,14 @@ router.get(
 router.get(
     '/manager/gathering/to',
     verifyToken,
-    checkRole(RoleId.GATHERING_MANAGER_ROLE),
+    checkRole([RoleId.GATHERING_MANAGER_ROLE, RoleId.ADMIN_ROLE]),
     packageController.getPackageToGatheringInGatheringPoint,
 );
 
 router.get(
     '/manager/gathering/from',
     verifyToken,
-    checkRole(RoleId.GATHERING_MANAGER_ROLE),
+    checkRole([RoleId.GATHERING_MANAGER_ROLE, RoleId.ADMIN_ROLE]),
     packageController.getPackageFromGatheringInGatheringPoint,
 );
 

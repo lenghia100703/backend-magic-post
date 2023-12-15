@@ -193,6 +193,45 @@ const authController = {
             return;
         }
     },
+
+    // [PUT] /auth/change-password
+    changePassword: async (req, res) => {
+        try {
+            const user = await Account.findById(req.user._id);
+            const validPassword = await bcrypt.compare(req.body.oldPassword, user.password);
+
+            if (!validPassword) {
+                return res.status(404).json({
+                    message: 'old password incorrect',
+                });
+            }
+
+            if (validPassword && user) {
+                const salt = await bcrypt.genSalt(10);
+                const newPassword = await bcrypt.hash(req.body.newPassword, salt);
+                const newUser = await Account.findByIdAndUpdate(
+                    req.user._id,
+                    {
+                        password: newPassword,
+                    },
+                    {
+                        new: true,
+                    },
+                );
+                res.status(200).json({
+                    message: 'change password success',
+                    data: newUser,
+                });
+                return;
+            }
+        } catch (err) {
+            res.status(500).json({
+                error: err,
+                message: 'change password failed',
+            });
+            return;
+        }
+    },
 };
 
 module.exports = authController;

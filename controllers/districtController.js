@@ -33,7 +33,7 @@ const districtController = {
     // [GET] /district/
     getAll: async (req, res) => {
         try {
-            const districts = await District.find();
+            const districts = await District.find().sort({ name: 1 });
             res.status(200).json({
                 data: districts,
                 message: 'get all districts success',
@@ -69,7 +69,7 @@ const districtController = {
     // [GET] /district/province/:provinceId
     getDistrictByProvinceId: async (req, res) => {
         try {
-            const districts = await District.find({ provinceId: req.params.provinceId });
+            const districts = await District.find({ provinceId: req.params.provinceId }).sort({ name: 1 });
             res.status(200).json({
                 data: districts,
                 message: 'get district by province id success',
