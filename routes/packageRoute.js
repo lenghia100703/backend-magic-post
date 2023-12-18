@@ -4,6 +4,9 @@ const packageController = require('../controllers/packageController');
 const checkRole = require('../middlewares/checkRole');
 const verifyToken = require('../middlewares/verifyToken');
 
+// get package by id
+router.get('/:packageId', packageController.getPackageById);
+
 // get package shipping
 router.get(
     '/staff/transaction/shipping',

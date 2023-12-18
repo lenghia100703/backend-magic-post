@@ -3,6 +3,24 @@ const Account = require('../models/Account');
 const District = require('../models/District');
 
 const packageController = {
+    // [GET] package/:packageId
+    getPackageById: async (req, res) => {
+        try {
+            const package = await Package.findById(req.params.packageId);
+            res.status(200).json({
+                data: package,
+                message: 'get package by id',
+            });
+            return;
+        } catch (error) {
+            res.status(404).json({
+                error: error,
+                message: 'not found',
+            });
+            return;
+        }
+    },
+
     // [GET] package/staff/transaction/shipping?page
     getPackageShipping: async (req, res) => {
         try {
