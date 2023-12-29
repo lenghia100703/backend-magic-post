@@ -16,7 +16,10 @@ const managerController = {
                 .skip(skip)
                 .limit(pageSize)
                 .sort({ createdAt: -1 });
-            const totalData = await Account.countDocuments({ role: RoleId.GATHERING_STAFF_ROLE });
+            const totalData = await Account.countDocuments({
+                role: RoleId.GATHERING_STAFF_ROLE,
+                workPlace: account.workPlace,
+            });
             res.status(200).json({
                 data: accounts,
                 message: 'get all gathering staff success',
@@ -152,8 +155,85 @@ const managerController = {
         }
     },
 
-    // [DELETE] /user/manager/delete/:staffId
+    // [GET] /user/manager/search/gathering-staff?page=&name=
+    getGatheringStaffByName: async (req, res) => {
+        try {
+            if (req.query.page && req.query.name) {
+                const pageSize = 10;
+                const skip = (req.query.page - 1) * pageSize;
+                const account = await Account.findById(req.user._id);
+                const accounts = await Account.find({
+                    role: RoleId.GATHERING_STAFF_ROLE,
+                    workPlace: account.workPlace,
+                    username: {
+                        $regex: `.*${req.query.name}.*`,
+                        $options: 'i',
+                    },
+                })
+                    .skip(skip)
+                    .limit(pageSize)
+                    .sort({ createdAt: -1 });
+                const totalData = await Account.countDocuments({
+                    role: RoleId.GATHERING_STAFF_ROLE,
+                    workPlace: account.workPlace,
+                    username: {
+                        $regex: `.*${req.query.name}.*`,
+                        $options: 'i',
+                    },
+                });
+                res.status(200).json({
+                    data: accounts,
+                    message: 'get all gathering staff success',
+                    total: totalData,
+                });
+                return;
+            }
+        } catch (error) {
+            res.status(404).json({ error: error, message: 'fail to get gathering staff account' });
+            return;
+        }
+    },
 
+    // [GET] /user/manager/search/transaction-staff?page=&name=
+    getTransactionStaffByName: async (req, res) => {
+        try {
+            if (req.query.page && req.query.name) {
+                const pageSize = 10;
+                const skip = (req.query.page - 1) * pageSize;
+                const account = await Account.findById(req.user._id);
+                const accounts = await Account.find({
+                    role: RoleId.TRANSACTION_STAFF_ROLE,
+                    workPlace: account.workPlace,
+                    username: {
+                        $regex: `.*${req.query.name}.*`,
+                        $options: 'i',
+                    },
+                })
+                    .skip(skip)
+                    .limit(pageSize)
+                    .sort({ createdAt: -1 });
+                const totalData = await Account.countDocuments({
+                    role: RoleId.TRANSACTION_STAFF_ROLE,
+                    workPlace: account.workPlace,
+                    username: {
+                        $regex: `.*${req.query.name}.*`,
+                        $options: 'i',
+                    },
+                });
+                res.status(200).json({
+                    data: accounts,
+                    message: 'get all transaction staff success',
+                    total: totalData,
+                });
+                return;
+            }
+        } catch (error) {
+            res.status(404).json({ error: error, message: 'fail to get transaction staff account' });
+            return;
+        }
+    },
+
+    // [DELETE] /user/manager/delete/:staffId
     deleteStaffAccount: async (req, res) => {
         try {
             const deleteAccount = await Account.findById(req.params.staffId);

@@ -59,6 +59,22 @@ router.post(
     adminController.createTransactionPoint,
 );
 
+// search manager gathering point
+router.get(
+    '/admin/search/gathering-manager',
+    verifyToken,
+    checkRole(RoleId.ADMIN_ROLE),
+    adminController.getGatheringManagerByName,
+);
+
+// search manager transaction point
+router.get(
+    '/admin/search/transaction-manager',
+    verifyToken,
+    checkRole(RoleId.ADMIN_ROLE),
+    adminController.getTransactionManagerByName,
+);
+
 // manager routes
 // create staff account
 router.post(
@@ -82,6 +98,20 @@ router.get(
     verifyToken,
     checkRole(RoleId.TRANSACTION_MANAGER_ROLE),
     managerController.getTransactionStaff,
+);
+
+router.get(
+    '/manager/search/gathering-staff',
+    verifyToken,
+    checkRole(RoleId.GATHERING_MANAGER_ROLE),
+    managerController.getGatheringStaffByName,
+);
+
+router.get(
+    '/manager/search/transaction-staff',
+    verifyToken,
+    checkRole(RoleId.TRANSACTION_MANAGER_ROLE),
+    managerController.getTransactionStaffByName,
 );
 
 //edit staff account
@@ -176,5 +206,15 @@ router.put(
 
 //customer routes
 // get orders
-router.get('/customer/search-order', verifyToken, checkRole(RoleId.CUSTOMER_ROLE), customerController.getPackage);
+router.get(
+    '/customer/search-order',
+    verifyToken,
+    checkRole([
+        RoleId.CUSTOMER_ROLE,
+        RoleId.ADMIN_ROLE,
+        RoleId.GATHERING_MANAGER_ROLE,
+        RoleId.TRANSACTION_MANAGER_ROLE,
+    ]),
+    customerController.getPackage,
+);
 module.exports = router;

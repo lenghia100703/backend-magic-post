@@ -189,22 +189,19 @@ const adminController = {
     deleteManagerAccount: async (req, res) => {
         try {
             const deleteAccount = await Account.findById(req.params.managerId);
-            await Account.findByIdAndDelete(req.params.managerId);
 
             await Role.findByIdAndUpdate(deleteAccount.role, {
                 $pull: {
                     accounts: deleteAccount._id,
                 },
             });
-
+            await Account.findByIdAndDelete(req.params.managerId);
             if (String(deleteAccount.role) === RoleId.GATHERING_MANAGER_ROLE) {
                 await GatheringPoint.findOneAndUpdate(
                     {
                         managerId: deleteAccount._id,
                     },
-                    {
-                        managerId: '',
-                    },
+                    { $unset: { managerId: '' } },
                     {
                         new: true,
                     },
@@ -214,15 +211,12 @@ const adminController = {
                     {
                         managerId: deleteAccount._id,
                     },
-                    {
-                        managerId: '',
-                    },
+                    { $unset: { managerId: '' } },
                     {
                         new: true,
                     },
                 );
             }
-
             res.status(200).json({
                 message: 'delete manager account success',
             });
@@ -294,6 +288,76 @@ const adminController = {
             });
         } catch (error) {
             res.status(500).json({ error: error, message: 'fail to create transaction point' });
+            return;
+        }
+    },
+
+    // [GET] /user/admin/search/gathering-manager?page=&name=
+    getGatheringManagerByName: async (req, res) => {
+        try {
+            if (req.query.page && req.query.name) {
+                const pageSize = 10;
+                const skip = (req.query.page - 1) * pageSize;
+                const accounts = await Account.find({
+                    role: RoleId.GATHERING_MANAGER_ROLE,
+                    username: {
+                        $regex: `.*${req.query.name}.*`,
+                        $options: 'i',
+                    },
+                })
+                    .skip(skip)
+                    .limit(pageSize)
+                    .sort({ createdAt: -1 });
+                const totalData = await Account.countDocuments({
+                    role: RoleId.GATHERING_MANAGER_ROLE,
+                    username: {
+                        $regex: `.*${req.query.name}.*`,
+                        $options: 'i',
+                    },
+                });
+                res.status(200).json({
+                    data: accounts,
+                    message: 'get all gathering manager accounts success',
+                    total: totalData,
+                });
+            }
+        } catch (error) {
+            res.status(404).json({ error: error, message: 'fail to get gathering manager account' });
+            return;
+        }
+    },
+
+    // [GET] /user/admin/search/transaction-manager?page=&name=
+    getTransactionManagerByName: async (req, res) => {
+        try {
+            if (req.query.page && req.query.name) {
+                const pageSize = 10;
+                const skip = (req.query.page - 1) * pageSize;
+                const accounts = await Account.find({
+                    role: RoleId.TRANSACTION_MANAGER_ROLE,
+                    username: {
+                        $regex: `.*${req.query.name}.*`,
+                        $options: 'i',
+                    },
+                })
+                    .skip(skip)
+                    .limit(pageSize)
+                    .sort({ createdAt: -1 });
+                const totalData = await Account.countDocuments({
+                    role: RoleId.TRANSACTION_MANAGER_ROLE,
+                    username: {
+                        $regex: `.*${req.query.name}.*`,
+                        $options: 'i',
+                    },
+                });
+                res.status(200).json({
+                    data: accounts,
+                    message: 'get all gathering manager accounts success',
+                    total: totalData,
+                });
+            }
+        } catch (error) {
+            res.status(404).json({ error: error, message: 'fail to get gathering manager account' });
             return;
         }
     },
